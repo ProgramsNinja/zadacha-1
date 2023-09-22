@@ -51,7 +51,7 @@ namespace задание_2
     }
     public abstract class Figure
     {
-        public abstract double periretr();
+        public abstract double Perimetr();
         public abstract double Area();
         public abstract void Info();
     }
@@ -66,7 +66,7 @@ namespace задание_2
             this.width = width;
         }
 
-        public override double periretr()
+        public override double Perimetr()
         {
             return (lenght + width)*2;
         }
@@ -79,9 +79,9 @@ namespace задание_2
         public override void Info()
         {
             if (lenght == width)
-                Console.WriteLine($"\n{"Квадрат",26}\t({lenght},{width})\tПериметр:{periretr()}\tПлощадь:{Area()}");
+                Console.WriteLine($"\n{"Квадрат",26}\t({lenght},{width})\tПериметр:{Perimetr()}\tПлощадь:{Area()}");
             else
-                Console.WriteLine($"\n{"Прямоугольник",26}\t({lenght},{width})\tПериметр:{periretr()}\tПлощадь:{Area()}");
+                Console.WriteLine($"\n{"Прямоугольник",26}\t({lenght},{width})\tПериметр:{Perimetr()}\tПлощадь:{Area()}");
         }
     }
     class Elipses : Figure
@@ -95,7 +95,7 @@ namespace задание_2
             this.radius2 = radius2;
         }
 
-        public override double periretr()
+        public override double Perimetr()
         {
             if (radius1 != radius2)
                 return 4 * ((Math.PI * radius1 * radius2 + Math.Pow(radius1 - radius2, 2)) / (radius1 + radius2));
@@ -111,9 +111,9 @@ namespace задание_2
         public override void Info()
         {
             if (radius1 == radius2)
-                Console.WriteLine($"\n{"Круг",26}\t({radius1},{radius2})\tПериметр:{periretr():f2}\tПлощадь:{Area():f2}");
+                Console.WriteLine($"\n{"Круг",26}\t({radius1},{radius2})\tПериметр:{Perimetr():f2}\tПлощадь:{Area():f2}");
             else
-                Console.WriteLine($"\n{"Элипс",26}\t({radius1},{radius2})\tПериметр:{periretr():f2}\tПлощадь:{Area():f2}");
+                Console.WriteLine($"\n{"Элипс",26}\t({radius1},{radius2})\tПериметр:{Perimetr():f2}\tПлощадь:{Area():f2}");
         }
     }
     class Triangle:Figure
@@ -129,7 +129,7 @@ namespace задание_2
             this.side3 = side3;
         }
 
-        public override double periretr()
+        public override double Perimetr()
         {
             return side1 + side2 + side3;
         }
@@ -144,11 +144,11 @@ namespace задание_2
         public override void Info()
         {
             if (side1 == side2 && side2 == side3)
-                Console.WriteLine($"\n{"Равносторонний треугольник",26}\t({side1},{side2},{side3})\tПериметр:{periretr()}\tПлощадь:{Area():f2}");
+                Console.WriteLine($"\n{"Равносторонний треугольник",26}\t({side1},{side2},{side3})\tПериметр:{Perimetr()}\tПлощадь:{Area():f2}");
             else if(side1==side2||side1==side3||side2==side3)             
-                Console.WriteLine($"\n{"Равнобедренный треугольник",26}\t({side1},{side2},{side3})\tПериметр:{periretr()}\tПлощадь:{Area():f2}");
+                Console.WriteLine($"\n{"Равнобедренный треугольник",26}\t({side1},{side2},{side3})\tПериметр:{Perimetr()}\tПлощадь:{Area():f2}");
             else                                                          
-                Console.WriteLine($"\n{"Разносторонний треугольник",26}\t({side1},{side2},{side3})\tПериметр:{periretr()}\tПлощадь:{Area():f2}");
+                Console.WriteLine($"\n{"Разносторонний треугольник",26}\t({side1},{side2},{side3})\tПериметр:{Perimetr()}\tПлощадь:{Area():f2}");
         }
     } 
 }
