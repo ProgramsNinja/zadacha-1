@@ -42,6 +42,7 @@ namespace задание_2
                        break;
                 }   
             }
+            Console.WriteLine("{0,16}{1,14}{2,21}{3,17}{4,20}","Название:","Стороны:","Периметр:","Площадь:","Особые свойства:");
             foreach (var figure in figures )
             {
                 figure.Info();
@@ -79,9 +80,9 @@ namespace задание_2
         public override void Info()
         {
             if (lenght == width)
-                Console.WriteLine($"\n{"Квадрат",26}\t({lenght},{width})\tПериметр:{Perimetr()}\tПлощадь:{Area()}");
+                Console.WriteLine($"{"Квадрат",16}\t({lenght},{width})\t \t{Perimetr(),10}\t{Area(),10}");
             else
-                Console.WriteLine($"\n{"Прямоугольник",26}\t({lenght},{width})\tПериметр:{Perimetr()}\tПлощадь:{Area()}");
+                Console.WriteLine($"{"Прямоугольник",16}\t({lenght},{width})\t \t{Perimetr(),10}\t{Area(),10}");
         }
     }
     class Elipses : Figure
@@ -111,9 +112,9 @@ namespace задание_2
         public override void Info()
         {
             if (radius1 == radius2)
-                Console.WriteLine($"\n{"Круг",26}\t({radius1},{radius2})\tПериметр:{Perimetr():f2}\tПлощадь:{Area():f2}");
+               Console.WriteLine($"{"Круг",16}\t({radius1},{radius2})\t \t{Perimetr(),10:f2}\t{Area(),10:f2}");
             else
-                Console.WriteLine($"\n{"Элипс",26}\t({radius1},{radius2})\tПериметр:{Perimetr():f2}\tПлощадь:{Area():f2}");
+                Console.WriteLine($"{"Элипс",16}\t({radius1},{radius2})\t \t{Perimetr(),10:f2}\t{Area(),10:f2}");
         }
     }
     class Triangle:Figure
@@ -144,11 +145,11 @@ namespace задание_2
         public override void Info()
         {
             if (side1 == side2 && side2 == side3)
-                Console.WriteLine($"\n{"Равносторонний треугольник",26}\t({side1},{side2},{side3})\tПериметр:{Perimetr()}\tПлощадь:{Area():f2}");
-            else if(side1==side2||side1==side3||side2==side3)             
-                Console.WriteLine($"\n{"Равнобедренный треугольник",26}\t({side1},{side2},{side3})\tПериметр:{Perimetr()}\tПлощадь:{Area():f2}");
-            else                                                          
-                Console.WriteLine($"\n{"Разносторонний треугольник",26}\t({side1},{side2},{side3})\tПериметр:{Perimetr()}\tПлощадь:{Area():f2}");
+                Console.WriteLine($"{"Треугольник",16}\t({side1},{side2},{side3})\t \t{Perimetr(),10:f2}\t{Area(),10:f2}\t{"Равносторонний"}");
+            else if (side1 == side2 || side1 == side3 || side2 == side3)
+                Console.WriteLine($"{"Треугольник",16}\t({side1},{side2},{side3})\t \t{Perimetr(),10:f2}\t{Area(),10:f2}\t{"Равнобедренный"}");
+            else
+                Console.WriteLine($"{"Треугольник",16}\t({side1},{side2},{side3})\t \t{Perimetr(),10:f2}\t{Area(),10:f2}\t{"Разносторонний"}");
         }
-    } 
+    }
 }
