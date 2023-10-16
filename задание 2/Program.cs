@@ -1,155 +1,282 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace задание_2
 {
-    class prograrm
+    interface IFigureCollection : IEnumerable<IFigure> { }
+    abstract class FigureCollection : IFigureCollection
+    {
+        public List<IFigure> figures = new List<IFigure>();
+        public IEnumerator<IFigure> GetEnumerator()
+        {
+            return figures.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    }
+    interface IFigure
+    {
+        double Perimeter();
+        double Area();
+        string SpecialProperties();
+        void Info();
+    }
+
+    class Program
     {
         static void Main(string[] args)
         {
             Random rnd = new Random();
-            List<Figure> figures = new List<Figure>();
+            List<IFigure> figures = new List<IFigure>();
+            int tr = 0;
+            int re = 0;
+            int el = 0;
             for (int i = 0; i < 10; i++)
             {
                 int r = rnd.Next(3);
                 switch (r)
                 {
                     case 0:
-                        Rectangle p = new Rectangle(rnd.Next(1,10), rnd.Next(1,10));
-                        figures.Add(p);
+                        Rectangle p = new Rectangle(rnd.Next(1, 4), rnd.Next(1, 4));
+                        figures.Add(p); re++;
                         break;
                     case 1:
-                        Elipses e = new Elipses(rnd.Next(1,10), rnd.Next(1,10));
-                        figures.Add(e);
+                        Ellipse e = new Ellipse(rnd.Next(1, 4), rnd.Next(1, 4));
+                        figures.Add(e); el++;
                         break;
                     case 2:
-                        bool d = true;
-                        while (d)
+                        double side1, side2, side3;
+                        do
                         {
-                            double a = rnd.Next(1,10);
-                            double b = rnd.Next(1,10);
-                            double c = rnd.Next(1,10);
-                            if (a + b > c && a + c > b &&b + c > a)
-                            {
-                                Triangle f = new Triangle(a, b, c);
-                                figures.Add(f);
-                                d = false;
-                            }
-                        }
-                       break;
-                }   
+                            side1 = rnd.Next(1, 10);
+                            side2 = rnd.Next(1, 10);
+                            side3 = rnd.Next(1, 10);
+                        } while (!(side1 + side2 > side3) || !(side1 + side3 > side2) || !(side2 + side3 > side1));
+                        Triangle f = new Triangle(side1, side2, side3);
+                        figures.Add(f); tr++;
+                        break;
+                }
             }
-            Console.WriteLine("{0,16}{1,14}{2,21}{3,17}{4,20}","Название:","Стороны:","Периметр:","Площадь:","Особые свойства:");
-            foreach (var figure in figures )
+            Console.WriteLine("{0,16}{1,14}{2,20}{3,17}{4,20}", "Название:", "Стороны:", "Периметр:", "Площадь:", "Особые свойства:");
+
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            foreach (var figure in figures)
             {
                 figure.Info();
             }
+            stopwatch.Stop();
+            Console.WriteLine(new string('_', 90));
+            Console.WriteLine("Время выолнения: " + stopwatch.ElapsedMilliseconds + " миллисекунд");
+
+            Stopwatch stopwatch2 = new Stopwatch();
+            IEnumerator<IFigure> enumerator = figures.GetEnumerator();
+            stopwatch2.Start();
+            while (enumerator.MoveNext())
+            {
+                IFigure figure = enumerator.Current;
+                figure.Info();
+            }
+            stopwatch2.Stop();
+            Console.WriteLine(new string('_', 90));
+            Console.WriteLine("Время выолнения: " + stopwatch2.ElapsedMilliseconds + " миллисекунд");
+
+            
+            var literk = figures
+                .Where(figure => figure.SpecialProperties().StartsWith("К"));
+
+
+            if (literk.Count() > 0)
+            {
+                Console.WriteLine("Все фигуры начинающие с буквы К:");
+                foreach (var figure in literk)
+                {
+                    figure.Info();
+
+                }
+                Console.WriteLine(new string('_', 90));
+            }
+            else
+            {
+                Console.WriteLine("Фигуры на букву 'К' отсутствуют ");
+            }
+           
+            var sortedByPerimetr = figures
+                .OrderBy(rectangle => rectangle.Perimeter());
+            Console.WriteLine("Фигуры отсортированные по периметру:");
+            foreach (var rectangle in sortedByPerimetr)
+            {
+                rectangle.Info();
+            }
+            Console.WriteLine(new string('_', 90));
+
+            var groupedByType = figures
+                .GroupBy(figure => figure.GetType().Name);
+
+            Console.WriteLine("Группировка фигур по типу:");
+            foreach (var group in groupedByType)
+            {
+                Console.WriteLine("Тип: " + group.Key);
+                foreach (var figure in group)
+                {
+                    figure.Info();
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine(new string('_', 90));
+
+
+            bool hasTriangles = figures.
+                Any(figure => figure is Triangle);
+            Console.WriteLine("Есть треугольники: " + hasTriangles);
+
+            bool trin = figures
+               .OfType<Triangle>().All(triangle => triangle.type == "Равносторонний");
+            Console.WriteLine("Есть равносторонний треугольники: " + trin);
+
+            bool allPerimetrGreaterThan10 = figures
+                .All(figure => figure.Perimeter() > 10);
+            Console.WriteLine("Все периметры больше 10: " + allPerimetrGreaterThan10);
+            
+            Console.WriteLine("Количество фигур: " + figures.Count());
+            Console.WriteLine("Количество треугольников: " + tr);
+            Console.WriteLine("Количество прямоугольников: " + re);
+            Console.WriteLine("Количество кругов: " + el);
+
+            double minSquare = figures
+               .Min(figure => figure.Area());
+            Console.WriteLine("Минимальная площадь: " + minSquare);
+
+            double maxSquare = figures
+                 .Max(figure => figure.Area());
+            Console.WriteLine("Максимальная площадь: {0:f3}", maxSquare);
             Console.ReadLine();
         }
     }
-    public abstract class Figure
-    {
-        public abstract double Perimetr();
-        public abstract double Area();
-        public abstract void Info();
-    }
-    class Rectangle:Figure
-    {
-        double lenght;
-        double width;
 
-        public Rectangle(double lenght,double width)
+    public class Rectangle : IFigure
+    {
+        double length;
+        double width;
+        string name;
+
+        public Rectangle(double length, double width)
         {
-            this.lenght = lenght;
+            this.length = length;
             this.width = width;
         }
 
-        public override double Perimetr()
+        public double Perimeter()
         {
-            return (lenght + width)*2;
+            return (length + width) * 2;
         }
 
-        public override double Area()
+        public double Area()
         {
-            return lenght * width;
+            return length * width;
         }
 
-        public override void Info()
+        public string SpecialProperties()
         {
-            if (lenght == width)
-                Console.WriteLine($"{"Квадрат",16}\t({lenght},{width})\t \t{Perimetr(),10}\t{Area(),10}");
-            else
-                Console.WriteLine($"{"Прямоугольник",16}\t({lenght},{width})\t \t{Perimetr(),10}\t{Area(),10}");
+            return length == width ? name = "Квадрат" : name = "Прямоугольник";
+        }
+
+        public void Info()
+        {
+            Console.WriteLine($"{SpecialProperties(),16}\t({length},{width})\t \t{Perimeter(),10}\t{Area(),10}");
         }
     }
-    class Elipses : Figure
+
+    public class Ellipse : IFigure
     {
         double radius1;
         double radius2;
+        string name;
 
-        public Elipses(double radius1,double radius2)
+        public Ellipse(double radius1, double radius2)
         {
             this.radius1 = radius1;
             this.radius2 = radius2;
         }
 
-        public override double Perimetr()
+        public double Perimeter()
         {
-            if (radius1 != radius2)
-                return 4 * ((Math.PI * radius1 * radius2 + Math.Pow(radius1 - radius2, 2)) / (radius1 + radius2));
-            else
-                return 2 * Math.PI * radius1;
+            return radius1 == radius2
+                ? 2 * Math.PI * radius1
+                : 4 * ((Math.PI * radius1 * radius2 + Math.Pow(radius1 - radius2, 2)) / (radius1 + radius2));
         }
 
-        public override double Area()
+        public double Area()
         {
-            return Math.PI*radius1*radius2;
+            return Math.PI * radius1 * radius2;
         }
 
-        public override void Info()
+        public string SpecialProperties()
         {
-            if (radius1 == radius2)
-               Console.WriteLine($"{"Круг",16}\t({radius1},{radius2})\t \t{Perimetr(),10:f2}\t{Area(),10:f2}");
-            else
-                Console.WriteLine($"{"Элипс",16}\t({radius1},{radius2})\t \t{Perimetr(),10:f2}\t{Area(),10:f2}");
+            return radius1 == radius2 ? name = "Круг" : name = "Эллипс";
+        }
+
+        public void Info()
+        {
+            Console.WriteLine($"{SpecialProperties(),16}\t({radius1},{radius2})\t \t{Perimeter(),10:f2}\t{Area(),10:f2}");
         }
     }
-    class Triangle:Figure
+
+    public class Triangle : IFigure
     {
         double side1;
         double side2;
         double side3;
-
-        public Triangle(double side1,double side2,double side3)
+        string name;
+        public string type;
+        public Triangle(double side1, double side2, double side3)
         {
             this.side1 = side1;
             this.side2 = side2;
             this.side3 = side3;
+
         }
 
-        public override double Perimetr()
+        public double Perimeter()
         {
             return side1 + side2 + side3;
         }
 
-        public override double Area()
+        public double Area()
         {
             double p = (side1 + side2 + side3) / 2;
-            double s = Math.Sqrt(p*(p-side1)*(p-side2)*(p-side3));
+            double s = Math.Sqrt(p * (p - side1) * (p - side2) * (p - side3));
             return s;
         }
 
-        public override void Info()
+        public string SpecialProperties()
         {
+            name = "Треугольник";
             if (side1 == side2 && side2 == side3)
-                Console.WriteLine($"{"Треугольник",16}\t({side1},{side2},{side3})\t \t{Perimetr(),10:f2}\t{Area(),10:f2}\t{"Равносторонний"}");
+            {
+                type = "Равносторонний";
+                return type;
+            }
             else if (side1 == side2 || side1 == side3 || side2 == side3)
-                Console.WriteLine($"{"Треугольник",16}\t({side1},{side2},{side3})\t \t{Perimetr(),10:f2}\t{Area(),10:f2}\t{"Равнобедренный"}");
+            {
+                type = "Равнобедренный";
+                return type;
+            }
             else
-                Console.WriteLine($"{"Треугольник",16}\t({side1},{side2},{side3})\t \t{Perimetr(),10:f2}\t{Area(),10:f2}\t{"Разносторонний"}");
+            {
+                type = "Разносторонний";
+                return type;
+            }
+        }
+
+        public void Info()
+        {
+            type = SpecialProperties();
+            Console.WriteLine($"{name,16}\t({side1},{side2},{side3})\t \t{Perimeter(),10:f2}\t{Area(),10:f2}\t{type}");
+
         }
     }
 }
